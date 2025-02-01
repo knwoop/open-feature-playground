@@ -1,0 +1,1 @@
+export AM_I_YELLOW='{"defaultVariant":"not-yellow","variants":[{"name":"yellow-with-key","targetingKey":"user","criteria":[{"key":"color","value":"yellow"}],"value":true},{"name":"yellow","targetingKey":"","criteria":[{"key":"color","value":"yellow"}],"value":true},{"name":"not-yellow","targetingKey":"","criteria": [],"value":false}]}'
