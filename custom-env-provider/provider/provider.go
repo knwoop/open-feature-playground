@@ -1,4 +1,4 @@
-package main
+package provider
 
 import (
 	"context"
@@ -20,7 +20,7 @@ type SimpleEnvProvider struct {
 	prefix string
 }
 
-func NewProvider(opts ...ProviderOption) *SimpleEnvProvider {
+func NewSimpleEnvProvider(opts ...ProviderOption) *SimpleEnvProvider {
 	p := &SimpleEnvProvider{
 		prefix: DefaultPrefix,
 	}

@@ -6,11 +6,13 @@ import (
 	"os"
 
 	"github.com/open-feature/go-sdk/openfeature"
+
+	"github.com/knwoop/open-feature-playground/custom-env-provider/provider"
 )
 
 func main() {
-	provider := NewProvider()
-	openfeature.SetProvider(provider)
+	pr := provider.NewSimpleEnvProvider()
+	openfeature.SetProvider(pr)
 
 	client := openfeature.NewClient("my-app")
 
