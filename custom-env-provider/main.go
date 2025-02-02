@@ -36,7 +36,7 @@ func main() {
 	evalCtx = openfeature.NewEvaluationContext(
 		"user-123", // targetingKey
 		map[string]interface{}{ // attributes
-			"my_feature": true,
+			"my_feature": false,
 			"count":      1000,
 		},
 	)

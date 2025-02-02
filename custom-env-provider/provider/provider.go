@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	DefaultPrefix = "OF_"
+	DefaultPrefix = "FT_"
 	ReasonEnv     = "env"
 	ReasonCtx     = "evaluation_context"
 )

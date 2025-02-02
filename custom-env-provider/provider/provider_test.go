@@ -12,16 +12,16 @@ import (
 
 func TestNewSimpleEnvProvider(t *testing.T) {
 	for name, test := range map[string]struct {
-		prefix   string
-		expected string
+		prefix string
+		want   string
 	}{
 		"default prefix": {
-			prefix:   "",
-			expected: DefaultPrefix,
+			prefix: "",
+			want:   DefaultPrefix,
 		},
 		"custom prefix": {
-			prefix:   "TEST_",
-			expected: "TEST_",
+			prefix: "TEST_",
+			want:   "TEST_",
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
@@ -33,7 +33,7 @@ func TestNewSimpleEnvProvider(t *testing.T) {
 			opts := []cmp.Option{
 				cmpopts.IgnoreUnexported(openfeature.ResolutionError{}),
 			}
-			if diff := cmp.Diff(test.expected, provider.prefix, opts...); diff != "" {
+			if diff := cmp.Diff(test.want, provider.prefix, opts...); diff != "" {
 				t.Errorf("prefix mismatch (-want +got):\n%s", diff)
 			}
 		})
@@ -46,13 +46,13 @@ func TestBooleanEvaluation(t *testing.T) {
 		flagKey      string
 		defaultValue bool
 		evalCtx      openfeature.FlattenedContext
-		expected     openfeature.BoolResolutionDetail
+		want         openfeature.BoolResolutionDetail
 	}{
 		"environment value true": {
 			envValue:     "true",
 			flagKey:      "test_flag",
 			defaultValue: false,
-			expected: openfeature.BoolResolutionDetail{
+			want: openfeature.BoolResolutionDetail{
 				Value: true,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonEnv,
@@ -63,7 +63,7 @@ func TestBooleanEvaluation(t *testing.T) {
 			envValue:     "invalid",
 			flagKey:      "test_flag",
 			defaultValue: false,
-			expected: openfeature.BoolResolutionDetail{
+			want: openfeature.BoolResolutionDetail{
 				Value: false,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewParseErrorResolutionError("strconv.ParseBool: parsing \"invalid\": invalid syntax"),
@@ -77,7 +77,7 @@ func TestBooleanEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": true,
 			},
-			expected: openfeature.BoolResolutionDetail{
+			want: openfeature.BoolResolutionDetail{
 				Value: true,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonCtx,
@@ -90,7 +90,7 @@ func TestBooleanEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": "not a bool",
 			},
-			expected: openfeature.BoolResolutionDetail{
+			want: openfeature.BoolResolutionDetail{
 				Value: false,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewTypeMismatchResolutionError("context value for test_flag is not a boolean"),
@@ -111,7 +111,7 @@ func TestBooleanEvaluation(t *testing.T) {
 			opts := []cmp.Option{
 				cmpopts.IgnoreUnexported(openfeature.ResolutionError{}),
 			}
-			if diff := cmp.Diff(test.expected, result, opts...); diff != "" {
+			if diff := cmp.Diff(test.want, result, opts...); diff != "" {
 				t.Errorf("result mismatch (-want +got):\n%s", diff)
 			}
 		})
@@ -124,13 +124,13 @@ func TestStringEvaluation(t *testing.T) {
 		flagKey      string
 		defaultValue string
 		evalCtx      openfeature.FlattenedContext
-		expected     openfeature.StringResolutionDetail
+		want         openfeature.StringResolutionDetail
 	}{
 		"environment value": {
 			envValue:     "test-value",
 			flagKey:      "test_flag",
 			defaultValue: "default",
-			expected: openfeature.StringResolutionDetail{
+			want: openfeature.StringResolutionDetail{
 				Value: "test-value",
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonEnv,
@@ -143,7 +143,7 @@ func TestStringEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": "context-value",
 			},
-			expected: openfeature.StringResolutionDetail{
+			want: openfeature.StringResolutionDetail{
 				Value: "context-value",
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonCtx,
@@ -156,7 +156,7 @@ func TestStringEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": 123,
 			},
-			expected: openfeature.StringResolutionDetail{
+			want: openfeature.StringResolutionDetail{
 				Value: "default",
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewTypeMismatchResolutionError("context value for test_flag is not a string"),
@@ -177,7 +177,7 @@ func TestStringEvaluation(t *testing.T) {
 			opts := []cmp.Option{
 				cmpopts.IgnoreUnexported(openfeature.ResolutionError{}),
 			}
-			if diff := cmp.Diff(test.expected, result, opts...); diff != "" {
+			if diff := cmp.Diff(test.want, result, opts...); diff != "" {
 				t.Errorf("result mismatch (-want +got):\n%s", diff)
 			}
 		})
@@ -190,13 +190,13 @@ func TestIntEvaluation(t *testing.T) {
 		flagKey      string
 		defaultValue int64
 		evalCtx      openfeature.FlattenedContext
-		expected     openfeature.IntResolutionDetail
+		want         openfeature.IntResolutionDetail
 	}{
 		"environment value": {
 			envValue:     "123",
 			flagKey:      "test_flag",
 			defaultValue: 0,
-			expected: openfeature.IntResolutionDetail{
+			want: openfeature.IntResolutionDetail{
 				Value: 123,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonEnv,
@@ -209,7 +209,7 @@ func TestIntEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": 123,
 			},
-			expected: openfeature.IntResolutionDetail{
+			want: openfeature.IntResolutionDetail{
 				Value: 123,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonCtx,
@@ -222,7 +222,7 @@ func TestIntEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": float64(123),
 			},
-			expected: openfeature.IntResolutionDetail{
+			want: openfeature.IntResolutionDetail{
 				Value: 123,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonCtx,
@@ -233,7 +233,7 @@ func TestIntEvaluation(t *testing.T) {
 			envValue:     "invalid",
 			flagKey:      "test_flag",
 			defaultValue: 0,
-			expected: openfeature.IntResolutionDetail{
+			want: openfeature.IntResolutionDetail{
 				Value: 0,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewParseErrorResolutionError("strconv.ParseInt: parsing \"invalid\": invalid syntax"),
@@ -247,7 +247,7 @@ func TestIntEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": "not a number",
 			},
-			expected: openfeature.IntResolutionDetail{
+			want: openfeature.IntResolutionDetail{
 				Value: 0,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewTypeMismatchResolutionError("context value for test_flag is not a number"),
@@ -268,7 +268,7 @@ func TestIntEvaluation(t *testing.T) {
 			opts := []cmp.Option{
 				cmpopts.IgnoreUnexported(openfeature.ResolutionError{}),
 			}
-			if diff := cmp.Diff(test.expected, result, opts...); diff != "" {
+			if diff := cmp.Diff(test.want, result, opts...); diff != "" {
 				t.Errorf("result mismatch (-want +got):\n%s", diff)
 			}
 		})
@@ -281,13 +281,13 @@ func TestFloatEvaluation(t *testing.T) {
 		flagKey      string
 		defaultValue float64
 		evalCtx      openfeature.FlattenedContext
-		expected     openfeature.FloatResolutionDetail
+		want         openfeature.FloatResolutionDetail
 	}{
 		"environment value": {
 			envValue:     "123.45",
 			flagKey:      "test_flag",
 			defaultValue: 0,
-			expected: openfeature.FloatResolutionDetail{
+			want: openfeature.FloatResolutionDetail{
 				Value: 123.45,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonEnv,
@@ -300,7 +300,7 @@ func TestFloatEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": 123.45,
 			},
-			expected: openfeature.FloatResolutionDetail{
+			want: openfeature.FloatResolutionDetail{
 				Value: 123.45,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonCtx,
@@ -313,7 +313,7 @@ func TestFloatEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": 123,
 			},
-			expected: openfeature.FloatResolutionDetail{
+			want: openfeature.FloatResolutionDetail{
 				Value: 123,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					Reason: ReasonCtx,
@@ -324,7 +324,7 @@ func TestFloatEvaluation(t *testing.T) {
 			envValue:     "invalid",
 			flagKey:      "test_flag",
 			defaultValue: 0,
-			expected: openfeature.FloatResolutionDetail{
+			want: openfeature.FloatResolutionDetail{
 				Value: 0,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewParseErrorResolutionError("strconv.ParseFloat: parsing \"invalid\": invalid syntax"),
@@ -338,7 +338,7 @@ func TestFloatEvaluation(t *testing.T) {
 			evalCtx: openfeature.FlattenedContext{
 				"test_flag": "not a number",
 			},
-			expected: openfeature.FloatResolutionDetail{
+			want: openfeature.FloatResolutionDetail{
 				Value: 0,
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewTypeMismatchResolutionError("context value for test_flag is not a number"),
@@ -359,7 +359,7 @@ func TestFloatEvaluation(t *testing.T) {
 			opts := []cmp.Option{
 				cmpopts.IgnoreUnexported(openfeature.ResolutionError{}),
 			}
-			if diff := cmp.Diff(test.expected, result, opts...); diff != "" {
+			if diff := cmp.Diff(test.want, result, opts...); diff != "" {
 				t.Errorf("result mismatch (-want +got):\n%s", diff)
 			}
 		})
@@ -371,12 +371,12 @@ func TestObjectEvaluation(t *testing.T) {
 		flagKey      string
 		defaultValue interface{}
 		evalCtx      openfeature.FlattenedContext
-		expected     openfeature.InterfaceResolutionDetail
+		want         openfeature.InterfaceResolutionDetail
 	}{
 		"object evaluation not supported": {
 			flagKey:      "test_flag",
 			defaultValue: map[string]interface{}{"key": "value"},
-			expected: openfeature.InterfaceResolutionDetail{
+			want: openfeature.InterfaceResolutionDetail{
 				Value: map[string]interface{}{"key": "value"},
 				ProviderResolutionDetail: openfeature.ProviderResolutionDetail{
 					ResolutionError: openfeature.NewGeneralResolutionError("Object type is not supported in simple env provider"),
@@ -392,7 +392,7 @@ func TestObjectEvaluation(t *testing.T) {
 			opts := []cmp.Option{
 				cmpopts.IgnoreUnexported(openfeature.ResolutionError{}),
 			}
-			if diff := cmp.Diff(test.expected, result, opts...); diff != "" {
+			if diff := cmp.Diff(test.want, result, opts...); diff != "" {
 				t.Errorf("result mismatch (-want +got):\n%s", diff)
 			}
 		})
